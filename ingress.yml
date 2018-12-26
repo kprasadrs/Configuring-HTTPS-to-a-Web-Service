@@ -1,0 +1,83 @@
+
+https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-multi-ssl
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: web
+spec:
+  backend:
+    serviceName: SERVICE
+    servicePort: 80
+    
+    
+    
+    https://dzone.com/articles/microservices-with-kubernetes-and-docker
+    -------------- https
+ https://itnext.io/migrating-a-spring-boot-service-to-kubernetes-in-5-steps-7c1702da81b6
+ 
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: spring-boot-ingress
+  annotations:
+    kubernetes.io/ingress.allow-http: "false"
+spec:
+  tls:
+  - secretName: your-tls-secret
+  backend:
+    serviceName: spring-boot-service
+    servicePort: 8080
+    
+    
+    --------- ingress 2 ---------
+    
+    
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: gateway-ingress
+spec:
+  backend:
+    serviceName: default-http-backend
+    servicePort: 80
+  rules:
+  - host: myawesomedomain.com
+      http:
+        paths:
+        - backend:
+            serviceName: website
+            servicePort: 8000
+    - host: test.myawesomedomain.com
+      http:
+        paths:
+        - backend:
+            serviceName: testwebsite
+            servicePort: 8000
+  - host: micro.all
+    http:
+      paths:
+      - path: /account
+        backend:
+          serviceName: account-service
+          servicePort: 2222
+      - path: /customer
+        backend:
+          serviceName: customer-service
+          servicePort: 3333
+          
+    
+    
+    -----------------TLS configuration
+    
+    secret.yml
+    
+apiVersion: v1
+data:
+  tls.crt: #base64 hash of your cert
+  tls.key: #base64 hash of your key
+kind: Secret
+metadata:
+  name: your-tls-secret
+  namespace: default
+type: Opaque
